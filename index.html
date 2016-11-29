@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+    <head>
+
+        <title>NgClassfieds</title>
+        <script src="node_modules/angular/angular.js"></script> 
+        <link rel="stylesheet" type="text/css" href="node_modules/angular-material/angular-material.css">
+        <link rel="stylesheet" type="text/css" href="node_modules/mdi/css/materialdesignicons.min.css" media="all">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <script type="text/javascript" src="node_modules/angular-animate/angular-animate.js"></script>
+        <script type="text/javascript" src="node_modules/angular-aria/angular-aria.js"></script>
+        <script type="text/javascript" src="node_modules/angular-material/angular-material.js"></script>
+        <script src="scripts/app.js"></script>
+        <script src="components/classfieds.ctr.js"></script>
+        <script type="text/javascript" src="components/classifieds.fac.js"></script>
+        <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.6/lodash.min.js"></script>
+        
+    </head>
+
+    <body ng-app="ngClassifieds" ng-controller="classifiedsCtrl">
+    	
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <p><strong>ngClassifieds</strong></p>
+                <md-button ng-click="openSidebar()">
+                    <md-icon class="mdi mdi-plus-circle"></md-icon>
+                    New Classified
+                </md-button>
+
+                <md-button ng-click="showFilters=true">
+                    <md-icon class="mdi mdi-plus-magnify"></md-icon>
+                    Filter
+                </md-button>
+
+            </div>
+        </md-toolbar>
+
+        <div class="filters" layout="row" layout-align="center center" ng-show="showFilters">
+            <md-input-container>
+                <label>Enter Search item</label>
+                <input type="text" ng-model="classifiedsFilter">
+            </md-input-container>
+
+            <!-- <md-input-container>
+                <label>Category</label>
+                <md-select>
+                    <md-option ng-repeat="category in categories" value = "{{category}}">
+                        {{category}}
+                    </md-option>
+                </md-select>
+            </md-input-container> -->
+        </div>
+
+        <md-sidenav class="md-sidenav-left md-whitefarme-z2" md-component-id="left">
+            <md-toolbar>
+                <h1 class="md-toolbar-tools">Add a classified</h1>
+            </md-toolbar>
+            <md-content layout-padding>
+                <form>
+                <md-input-container>
+                    <label for="title">Title</label>
+                    <input type="text" id="title"  ng-model="classified.title" md-autofocus>
+                </md-input-container>
+
+                <md-input-container>
+                    <label for="price">Price</label>
+                    <input type="text" id="price" ng-model="classified.price">
+                </md-input-container>
+
+                <md-input-container>
+                    <label for="description">Description</label>
+                    <textarea type="text" id="description" ng-model="classified.description"></textarea>
+                </md-input-container>
+
+                <md-input-container>
+                    <label for="Image">Image Upload</label>
+                    <input type="text" id="image" ng-model="classified.image">
+                </md-input-container>
+
+                <md-button class="md-primary" ng-if= "!editing" ng-click = "saveClassified(classified)">Save</md-button>
+                <md-button class="md-primary" ng-if="editing" ng-click="saveEdit()">Save Edit</md-button>
+                <md-button class="md-warn" ng-click="closeSidebar()">Cancel</md-button>
+                <pre>{{ classified | json}}</pre>
+                </form>
+            </md-content>
+        </md-sidenav>
+
+       	<md-content class="md-padding" layout="row" layout-wrap>
+            <md-card flex="30" ng-repeat="classified in classifieds | filter:classifiedsFilter">
+                <img ng-src="{{classified.image}}" alt="">
+                <md-card-content>
+
+                    <div class="classified-info" ng-show="!showContact">
+                        <h2 class="md-title"> {{classified.title}}</h2>
+                        <h2>{{ classified.posted | date:'longDate' }}</h2>
+                        <h3>{{classified.price | currency}}</h3>
+                        <p>{{classified.description}}</p>
+                    </div>
+                    <div class="classified-contact" ng-show="showContact">
+                        <p><md-icon class="mdi mdi-account"></md-icon>{{classified.contact.name}}</p>
+                        <p><md-icon class="mdi mdi-phone"></md-icon>{{classified.contact.phone}}</p>
+                        <p><md-icon class="mdi mdi-email"></md-icon>{{classified.contact.email}}</p>
+                    </div>
+                    <div layout="row">
+                        <md-button  ng-click="showContact = true" ng-show="!showContact">Contact</md-button>
+                        <md-button ng-click="showContact = false" ng-show="showContact">Details</md-button>
+                        <md-button ng-click="showAdmin = true" ng-show="!showAdmin">Admin</md-button>
+                        <md-button ng-click="showAdmin = false" ng-show="showAdmin">close</md-button>
+                    </div>
+
+                    <div class="classified-admin" ng-if="showAdmin">
+                        <h3>Admin</h3>
+                        <div layout="row">
+                            <md-button class="md-primary" ng-click="editClassified(classified)">Edit</md-button>
+                            <md-button class="md-warn" ng-click="deleteClassified($event,classified)">Delete</md-button>
+                        </div>
+                    </div>
+
+                </md-card-content>
+            </md-card>
+        </md-content>
+    </body>
+</html>
